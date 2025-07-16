@@ -173,7 +173,7 @@ docker run --rm \
 
 ## 👤 **Author**
 
-**Developed by:** Prince Chouksey
+**Developed by:** Prince Chouksey, Poonam Raghuwanshi 
 **Hackathon:** Adobe Hackathon Round 1A
 **Date:** July 2025
 

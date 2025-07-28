@@ -181,4 +181,4 @@ docker run --rm \
 
 ## 📞 **Contact**
 
-For queries, connect at \[[princechouksey137@gmail.com](mailto: princechouksey37@gmail.com)] or 
+For queries, connect at  princechouksey137@gmail.com

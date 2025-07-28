@@ -14,9 +14,13 @@ This tool was built for **Hackathon Round 1A**, under strict constraints of **of
 ## ✅ **Features**
 
 ✔️ Extracts **document title** using **font size + position heuristic**
+
 ✔️ Extracts **headings** and classifies them as **H1, H2, H3** based on font size clustering
+
 ✔️ Retains **special characters** (colons, semicolons, dots, commas, etc.) in extracted text
+
 ✔️ Outputs results in **valid JSON** format for each PDF
+
 ✔️ Fully **offline**, **CPU-only**, and **Dockerised**
 
 ---
@@ -148,6 +152,7 @@ docker run --rm \
 ```
 
 ✔️ **All PDFs in `/input` directory will be processed automatically.**
+
 ✔️ **Outputs are saved as .json files in `/output` directory** with the **same filenames as the input PDFs**.
 
 ---
@@ -163,19 +168,26 @@ docker run --rm \
 ## 🚫 **Constraints Compliance**
 
 ✅ No hardcoded filenames
+
 ✅ No internet / API calls
+
 ✅ No GPU dependencies
+
 ✅ <200MB container size
+
 ✅ Runs on CPU (AMD64)
+
 ✅ Outputs valid JSONs as per hackathon format
 
 ---
 
 ## 👤 **Author**
 
-**Developed by:** Prince Chouksey, Poonam Raghuwanshi 
-**Hackathon:** Adobe Hackathon Round 1A
-**Date:** July 2025
+**Developed by:**  Prince Chouksey, Poonam Raghuwanshi 
+
+**Hackathon:**     Adobe Hackathon Round 1A
+
+
 
 ---
 

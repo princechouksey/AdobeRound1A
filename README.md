@@ -181,5 +181,4 @@ docker run --rm \
 
 ## 📞 **Contact**
 
-For queries, connect at \[[your\_email@example.com](mailto:your_email@example.com)] or \[LinkedIn Profile URL].
-
+For queries, connect at \[[your\_email@example.com](mailto:your_email@example.com)] or 

@@ -19,14 +19,20 @@ def extract_title(pdf_path):
     for block in blocks:
         if "lines" in block:
             for line in block["lines"]:
+                line_text = ""
+                max_size = 0
                 for span in line["spans"]:
-                    y0 = span["bbox"][1]
-                    if y0 < page_height * TITLE_TOP_AREA_PERCENTAGE:
-                        candidates.append({
-                            "text": clean_text(span["text"]),
-                            "font_size": span["size"],
-                            "y0": y0
-                        })
+                    text = clean_text(span["text"])
+                    if text:
+                        line_text += " " + text if line_text else text
+                        max_size = max(max_size, span["size"])
+                y0 = line["bbox"][1]
+                if line_text and y0 < page_height * TITLE_TOP_AREA_PERCENTAGE:
+                    candidates.append({
+                        "text": line_text.strip(),
+                        "font_size": max_size,
+                        "y0": y0
+                    })
 
     if candidates:
         candidates.sort(key=lambda x: x["font_size"], reverse=True)
@@ -40,7 +46,7 @@ def extract_headings(pdf_path):
     headings = []
     all_font_sizes = []
 
-    # First pass: collect font sizes for median body size calculation
+    # First pass: collect font sizes
     for page in doc:
         blocks = page.get_text("dict")["blocks"]
         for block in blocks:
@@ -54,18 +60,21 @@ def extract_headings(pdf_path):
     for page_num, page in enumerate(doc, start=1):
         blocks = page.get_text("dict")["blocks"]
         for block in blocks:
+            # ➡️ Simple table detection: skip blocks with many closely aligned columns
+            if len(block.get("lines", [])) > 3 and block["bbox"][2] - block["bbox"][0] > 400:
+                continue  # adjust width threshold based on your PDFs
+
             for line in block.get("lines", []):
                 line_text = ""
                 max_size = 0
                 font_name = ""
                 for span in line.get("spans", []):
                     text = clean_text(span["text"])
-                    if not text:
-                        continue
-                    line_text += " " + text if line_text else text
-                    if span["size"] > max_size:
-                        max_size = span["size"]
-                        font_name = span["font"]
+                    if text:
+                        line_text += " " + text if line_text else text
+                        if span["size"] > max_size:
+                            max_size = span["size"]
+                            font_name = span["font"]
 
                 if not line_text:
                     continue
@@ -76,7 +85,7 @@ def extract_headings(pdf_path):
                 if date_pattern.match(stripped_line):
                     continue
 
-                # ➡️ Exclude TOC entries with dot leaders
+                # ➡️ Exclude TOC dot leader lines
                 if toc_dot_leader_pattern.search(stripped_line):
                     continue
 
@@ -92,13 +101,13 @@ def extract_headings(pdf_path):
                 # ➡️ Colon-ending headings
                 if stripped_line.endswith(":"):
                     headings.append({
-                        "level": "H1",  # Can refine to H2/H3 if needed
+                        "level": "H1",
                         "text": stripped_line,
                         "page": page_num
                     })
                     continue
 
-                # ➡️ Heuristic detection: large font or bold font
+                # ➡️ Large font or bold heuristic
                 if (
                     max_size >= 1.2 * median_size or
                     "bold" in font_name.lower()
@@ -111,7 +120,16 @@ def extract_headings(pdf_path):
                         "page": page_num
                     })
 
-    return headings
+    # ➡️ Remove duplicates (if same text appears consecutively)
+    deduped_headings = []
+    seen = set()
+    for h in headings:
+        key = (h["text"], h["page"])
+        if key not in seen:
+            deduped_headings.append(h)
+            seen.add(key)
+
+    return deduped_headings
 
 def detect_level(text):
     count_dots = text.count(".")

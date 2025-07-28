@@ -1,0 +1,13 @@
+# 🐍 Ignore Python virtual environments
+venv/
+ENV/
+env/
+.venv/
+
+# 🧪 Python bytecode and cache
+__pycache__/
+*.py[cod]
+*$py.class
+
+# 📦 Package and dependency files
+*.egg-i*
